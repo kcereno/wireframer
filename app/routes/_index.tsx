@@ -1,4 +1,6 @@
 import type { MetaFunction } from '@remix-run/node';
+import Select from '~/components/ui/Select';
+import { StringMap } from '~/types/utilityTypes';
 
 export const meta: MetaFunction = () => {
   return [
@@ -7,40 +9,41 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export type CanvasType =
+  | 'MOBILE'
+  | 'TABLET'
+  | 'LAPTOP'
+  | 'DESKTOP'
+  | 'ULTRAWIDE';
+
 export default function Index() {
+  // const [showMenu, setShowMenu] = React.useState(true);
+
+  const canvasSizeOptions: CanvasType[] = [
+    'MOBILE',
+    'TABLET',
+    'LAPTOP',
+    'DESKTOP',
+    'ULTRAWIDE',
+  ];
+
+  const updateConfigForm = (updatedConfig: StringMap) => {
+    console.log('updateConfigForm ~ config:', updatedConfig);
+  };
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', lineHeight: '1.8' }}>
-      <h1 className="bg-red-300">Welcome to Remix</h1>
-      <button className="btn">Button</button>
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            15m Quickstart Blog Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/docs"
-            rel="noreferrer"
-          >
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+    <div className="">
+      {/* Menu */}
+
+      <div className="p-10">
+        <Select
+          label="Canvas Size"
+          id="canvasSize"
+          options={canvasSizeOptions}
+          onChange={updateConfigForm}
+        />
+      </div>
+
+      <div className="Canvas"></div>
     </div>
   );
 }
