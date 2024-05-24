@@ -1,7 +1,10 @@
 import type { MetaFunction } from '@remix-run/node';
 import { useState } from 'react';
+import Canvas from '~/components/Canvas';
 import Select from '~/components/ui/Select';
-import { StringMap } from '~/types/utilityTypes';
+import { INITIAL_LAYOUT_CONFIG, screenSizes } from '~/constants';
+import { Component, LayoutConfig } from '~/types/layout';
+import { ScreenSize } from '~/types/screen';
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,52 +13,27 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export type CanvasSize =
-  | 'MOBILE'
-  | 'TABLET'
-  | 'LAPTOP'
-  | 'DESKTOP'
-  | 'ULTRAWIDE';
-
-export type ConfigForm = {
-  canvasSize: CanvasSize;
-};
-
 export default function Index() {
-  const INITIAL_CONFIG_FORM: ConfigForm = {
-    canvasSize: 'MOBILE',
+  const [layoutConfig, setLayoutConfig] = useState<LayoutConfig>(
+    INITIAL_LAYOUT_CONFIG
+  );
+  console.log('Index ~ layoutConfig:', layoutConfig);
+
+  const updateScreenSize = (updatedScreenSize: ScreenSize) => {
+    const updatedConfigForm: LayoutConfig = {
+      ...layoutConfig,
+      screen: updatedScreenSize,
+    };
+    setLayoutConfig(updatedConfigForm);
   };
 
-  const [configForm, setConfigForm] = useState<ConfigForm>(INITIAL_CONFIG_FORM);
-  console.log('Index ~ configForm:', configForm);
-  // const [showMenu, setShowMenu] = React.useState(true);
-
-  const canvasSizeOptions: CanvasSize[] = [
-    'MOBILE',
-    'TABLET',
-    'LAPTOP',
-    'DESKTOP',
-    'ULTRAWIDE',
-  ];
-
-  const getWidth = (canvasSize: CanvasSize) => {
-    const tailwindBreakpoints = {
-      MOBILE: 'max-w-[375px]', // Small screens and up
-      TABLET: 'max-w-[768px]', // Medium screens and up
-      LAPTOP: 'max-w-[1024px]', // Large screens and up
-      DESKTOP: 'max-w-[1440px]', // Extra large screens and up
-      ULTRAWIDE: 'max-w-[2560px]', // 2X large screens and up
+  const handleAddButtonClick = () => {
+    const defaultComponent: Component = {
+      type: 'NAV',
     };
 
-    return tailwindBreakpoints[canvasSize];
-  };
-
-  const width = getWidth(configForm.canvasSize);
-  console.log('Index ~ width:', width);
-
-  const updateConfigForm = (updatedConfig: StringMap) => {
-    const updatedConfigForm = { ...configForm, ...updatedConfig };
-    setConfigForm(updatedConfigForm);
+    const updatedComponents = [...layoutConfig.components, defaultComponent];
+    setLayoutConfig({ ...layoutConfig, components: updatedComponents });
   };
   return (
     <div className="">
@@ -63,16 +41,35 @@ export default function Index() {
 
       <div className="p-10">
         <Select
-          label="Canvas Size"
-          id="canvasSize"
-          options={canvasSizeOptions}
-          onChange={updateConfigForm}
+          label="Screen Size"
+          id="screenSize"
+          defaultValue={screenSizes[0]}
+          options={screenSizes}
+          onChange={updateScreenSize}
         />
+        <div className="flex my-4 gap-2 items-center">
+          <h2 className="text-xl">Components</h2>
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={handleAddButtonClick}
+          >
+            +
+          </button>
+        </div>
+        <div className="flex gap-2 flex-col">
+          {layoutConfig.components.map((component, index) => (
+            <Select
+              key={index}
+              id="componentType"
+              options={['NAV']}
+              onChange={() => {}}
+              defaultValue="NAV"
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="flex justify-center mx-10">
-        <div className={`${width} bg-red-300 w-full`}>Canvas</div>
-      </div>
+      <Canvas {...layoutConfig} />
     </div>
   );
 }

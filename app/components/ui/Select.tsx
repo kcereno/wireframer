@@ -1,17 +1,22 @@
 import React from 'react';
-import { StringMap } from '~/types/utilityTypes';
 
-type SelectProps = {
+type SelectProps<T> = {
   id: string;
-  label: string;
+  label?: string;
   options: string[];
-  onChange: (config: StringMap) => void;
+  onChange: (updatedValue: T) => void;
+  defaultValue: string;
 };
 
-function Select({ id, label, options, onChange }: SelectProps) {
+function Select<T>({
+  id,
+  label,
+  options,
+  onChange,
+  defaultValue,
+}: SelectProps<T>) {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const updatedConfig = { [id]: e.target.value };
-    onChange(updatedConfig);
+    onChange(e.target.value as T);
   };
 
   return (
@@ -19,19 +24,13 @@ function Select({ id, label, options, onChange }: SelectProps) {
       htmlFor={id}
       className="form-control w-full max-w-xs"
     >
-      <div className="label label-text">{label}</div>
+      {label ? <div className="label label-text">{label}</div> : null}
       <select
         className="select select-bordered"
         id={id}
         onChange={handleChange}
-        defaultValue={'Pick One'}
+        defaultValue={defaultValue}
       >
-        <option
-          disabled
-          value={'Pick One'}
-        >
-          Pick one
-        </option>
         {options.map((option) => (
           <option
             key={option}
