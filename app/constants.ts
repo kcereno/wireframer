@@ -1,15 +1,25 @@
-import { LayoutConfig } from './types/layout';
+import {
+  ComponentType,
+  HeroConfig,
+  LayoutConfig,
+  NavConfig,
+} from './types/layout';
 import { ScreenSize } from './types/screen';
 
 export const screenSizes: ScreenSize[] = [
-  'MOBILE',
-  'TABLET',
-  'LAPTOP',
-  'DESKTOP',
-  'ULTRAWIDE',
+  'mobile',
+  'tablet',
+  'laptop',
+  'desktop',
+  'ultrawide',
 ];
 
 export const INITIAL_LAYOUT_CONFIG: LayoutConfig = {
-  screen: 'MOBILE',
+  screenSize: 'mobile',
   components: [],
 };
+
+export const ComponentTypes: ComponentType[] = ['nav', 'hero'];
+
+export const NavConfigs: NavConfig[] = ['title only', 'title and icon'];
+export const HeroConfigs: HeroConfig[] = ['basic', 'text only'];

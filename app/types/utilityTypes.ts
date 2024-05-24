@@ -1,3 +1,3 @@
-export type StringMap = {
+export type StringMap<> = {
   [key: string]: string;
 };
